@@ -1,0 +1,47 @@
+# macOS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Xcode
+*.xcuserstate
+project.xcworkspace/
+xcuserdata/
+xcuserdata/**
+*.xcodeproj
+
+# Build outputs (critical for C projects)
+*.o
+*.d
+*.a
+*.dSYM
+build/
+DerivedData/
+*.swp
+*.swo
+*.as3
+
+# C/C++ specifics
+*.exe
+*.dll
+*.so
+*.dylib
+*.app
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Secrets and configs (NEVER commit these)
+config.json
+.env
+*.key
+*.pem
+secrets.*
