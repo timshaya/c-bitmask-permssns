@@ -94,13 +94,25 @@ int main(int argc, const char * argv[]) {
     
     printf("Initial value of mode:  ");
     print_mode(mode); //rwxr-x---
-    printf("\n\n");
-    
-    
-    //TODO: 
+    printf("\n");
     
     
     
     
+    set_perm(&mode, PERM_GROUP_READ | PERM_GROUP_EXEC);
+    set_perm(&mode, PERM_OTHER_EXEC);
+  
+    printf("2nd value of mode:  ");
+    print_mode(mode); //rwxr-x--x
+    printf("\n");
+    
+    //TODO: clear, check
+    
+    if(has_perm(mode, PERM_OTHER_WRITE)){
+        printf("OTHER has WRITE permissios\n");
+    } else {
+        printf("OTHER does not have WRITE permissios\n\n");
+    }
+        
     return EXIT_SUCCESS;
 }
