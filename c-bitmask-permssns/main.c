@@ -17,9 +17,9 @@
 #define PERM_GROUP_WRITE ((uint16_t)1u << 4)
 #define PERM_GROUP_EXEC  ((uint16_t)1u << 3)
 
-#define PERM_OTHER_READ  ((uint16_t)1u << 5)
-#define PERM_OTHER_WRITE ((uint16_t)1u << 4)
-#define PERM_OTHER_EXEC  ((uint16_t)1u << 3)
+#define PERM_OTHER_READ  ((uint16_t)1u << 2)
+#define PERM_OTHER_WRITE ((uint16_t)1u << 1)
+#define PERM_OTHER_EXEC  ((uint16_t)1u << 0)
 
 /* Setters, etc */
 void set_perm(uint16_t *mode, uint16_t mask){
@@ -31,6 +31,30 @@ void set_perm(uint16_t *mode, uint16_t mask){
         ------------------- // perform a bitwise OR (mode | mask)
         0000 0001 0000 0000 // &mode is now "0000 0001 0000 0000" in binary
     */
+}
+
+int has_perm(uint16_t mode, uint16_t mask){
+    return (mode & mask);
+}
+
+/* Print permissions as rwxr-x--- style */
+void print_mode(uint16_t mode){
+    char buf[10];
+    
+    buf[0] = has_perm(mode, PERM_OWNER_READ)  ? 'r' : '-';
+    buf[1] = has_perm(mode, PERM_OWNER_WRITE) ? 'w' : '-';
+    buf[2] = has_perm(mode, PERM_OWNER_EXEC)  ? 'x' : '-';
+    
+    buf[3] = has_perm(mode, PERM_GROUP_READ)  ? 'r' : '-';
+    buf[4] = has_perm(mode, PERM_GROUP_WRITE) ? 'w' : '-';
+    buf[5] = has_perm(mode, PERM_GROUP_EXEC)  ? 'x' : '-';
+
+    buf[6] = has_perm(mode, PERM_OTHER_READ)  ? 'r' : '-';
+    buf[7] = has_perm(mode, PERM_OTHER_WRITE) ? 'w' : '-';
+    buf[8] = has_perm(mode, PERM_OTHER_EXEC)  ? 'x' : '-';
+    buf[9] = '\0';
+    
+    printf("%s\n", buf);
 }
 
 int main(int argc, const char * argv[]) {
@@ -64,7 +88,9 @@ int main(int argc, const char * argv[]) {
     
     set_perm(&mode, PERM_GROUP_READ | PERM_GROUP_EXEC);
     
-    
+    printf("Initial value of mode:  ");
+    print_mode(mode); //rwxr-x---
+    printf("\n\n");
     
     return EXIT_SUCCESS;
 }
