@@ -33,6 +33,10 @@ void set_perm(uint16_t *mode, uint16_t mask){
     */
 }
 
+void clear_perm(uint16_t *mode, uint16_t mask){
+    *mode &= ~mask;
+}
+
 int has_perm(uint16_t mode, uint16_t mask){
     return (mode & mask);
 }
@@ -91,6 +95,12 @@ int main(int argc, const char * argv[]) {
     printf("Initial value of mode:  ");
     print_mode(mode); //rwxr-x---
     printf("\n\n");
+    
+    
+    //TODO: 
+    
+    
+    
     
     return EXIT_SUCCESS;
 }
