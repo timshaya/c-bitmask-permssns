@@ -96,9 +96,6 @@ int main(int argc, const char * argv[]) {
     print_mode(mode); //rwxr-x---
     printf("\n");
     
-    
-    
-    
     set_perm(&mode, PERM_GROUP_READ | PERM_GROUP_EXEC);
     set_perm(&mode, PERM_OTHER_EXEC);
   
@@ -106,12 +103,14 @@ int main(int argc, const char * argv[]) {
     print_mode(mode); //rwxr-x--x
     printf("\n");
     
-    //TODO: clear, check
+    clear_perm(&mode, PERM_GROUP_EXEC);
+    printf("Just removed PERM_GROUP_EXEC from mode, so now permissions are:\n  ");
+    print_mode(mode);
     
-    if(has_perm(mode, PERM_OTHER_WRITE)){
-        printf("OTHER has WRITE permissios\n");
+    if(has_perm(mode, PERM_GROUP_EXEC)){
+        printf("\n\nGROUP has EXEC permissios\n");
     } else {
-        printf("OTHER does not have WRITE permissios\n\n");
+        printf("\n\nGROUP does not have EXEC permissios\n\n");
     }
         
     return EXIT_SUCCESS;
