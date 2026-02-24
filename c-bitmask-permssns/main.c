@@ -64,6 +64,7 @@ void print_mode(uint16_t mode){
     printf("%s\n", buf);
 }
 
+/* statis version, initial take */
 int main(int argc, const char * argv[]) {
     
 
