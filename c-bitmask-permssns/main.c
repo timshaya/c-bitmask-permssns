@@ -69,8 +69,48 @@ void print_mode(uint16_t mode){
 
 static int parse_owner_perm(const char *line, uint16_t *out_mask) {
     
-    //TODO:
+    //Skip leading whitespace
+    while (isspace((unsigned char)*line)) line++;
     
+    if(*line == '\0') return -1;
+    
+    //if it starts with digit, treat it as a numeric mask
+    if(isdigit((unsigned char)*line)) {
+        errno = 0;
+        char *end = NULL;
+        unsigned long v = strtoul(line, &end, 0); //base 0: 0x... hex, 0.. octal, else decimal
+        
+        if (errno != 0) return -1; //overflow/underflow or other error
+        if (end == line) return -1; //no digits parsed
+        
+        //Allow trailing whitespace / newline only
+        while(isspace((unsigned char)*end)) end++;
+
+        if(*end != '\0') return -1; //junk after number
+        
+        if(v > UINT16_MAX) return -1; //won't fit uint16_t
+        *out_mask = (uint16_t)v;
+        return 0;
+    }
+    
+    //Otherwise parse symbolic letters r/w/x (owner only, for now)
+    uint16_t mask = 0;
+    for(const char *p = line; *p != '\0' && *p != '\n'; p++) {
+        if(isspace((unsigned char)*p)) continue;
+        
+        char c = (char)tolower((unsigned char)*p);
+        if(c == 'r')
+            mask |= PERM_OWNER_READ;
+        else if(c == 'w')
+            mask |= PERM_OWNER_WRITE;
+        else if(c == 'x')
+            mask |= PERM_OWNER_EXEC;
+        else return -1;
+    }
+    
+    if(mask == 0) return -1; //nothing meaningful was entered
+    *out_mask = mask;
+
     return 0;
 }
 
@@ -86,7 +126,7 @@ int main(void) {
 
 
     for(;;){
-        fputs("Enter owner permissions (r/w/x e.g. rwx)  numeric mask (0400, 0x0100, 256). q to quit:\n", stdout);
+        fputs("Enter owner permissions (r/w/x e.g. r, or w, or wx, or x)  numeric mask (0400, 0x0100, 256). q to quit:\n", stdout);
         
         if(!fgets(buffer, sizeof buffer, stdin)){
             //EOF (Cmd / Ctrl D) or input error
@@ -96,14 +136,13 @@ int main(void) {
         if(buffer[0] =='q' || buffer[0] == 'Q'){ break;}
         
         uint16_t maskFromUsrInput = 0;
-        
-        //TODO: write out parse_owner_perm()
-//        if(parse_owner_perm(buffer, &maskFromUsrInput != 0)){
-//            fputs("Invalid input. Examples: r, rw, rwx, 0400, 0x0100, 256");
-//        }
-//        
+        if(parse_owner_perm(buffer, &maskFromUsrInput) != 0){
+            fputs("Invalid input. Examples: r, rw, rwx, 0400, 0x0100, 256", stderr);
+            continue;
+        }
         
         printf("Parked mask: 0x%04" PRIx16 " (%" PRIu16 ")\n", maskFromUsrInput, maskFromUsrInput);
+        
         
         set_perm(&mode, maskFromUsrInput);
         
