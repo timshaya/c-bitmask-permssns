@@ -227,6 +227,10 @@ int main(void) {
         
         if(!fgets(buffer, sizeof buffer, stdin)) break; // EOF / error
         if(buffer[0] == 'q' || buffer[0] =='Q') break; //quit
+        if(buffer[0] == 'c' || buffer[0] =='C') {
+            clear_perm(&mode, PERM_ALL_MASK); //clear the values
+            
+        }
         
         uint16_t newMode = 0;
         if(parse_perm_line(buffer, mode, &newMode) != 0) {
@@ -236,7 +240,14 @@ int main(void) {
         
         mode = newMode;
         
-        //showMore(mode);
+        //sample input:
+        // o=x    ,leads to output: (--------x)
+        // g=rwx  ,leads to output: (---rwx--x) (including, the previous input of o=x
+        // u+r,   ,leads to output: (r--rwx--x) (including, the previous input of o=x and g=rwx
+        char rwx[10];
+        mode_to_rwx9(mode, rwx);
+        printf("Parsed mask: 0x%04" PRIx16 " (%s)\n", mode, rwx);
+        
         
         
         
