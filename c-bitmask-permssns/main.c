@@ -249,6 +249,7 @@ int main(void) {
         printf("Parsed mask: 0x%04" PRIx16 " (%s)\n", mode, rwx);
         
         
+        //TODO: re-enable clear_perm()
         
         
     }
