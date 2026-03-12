@@ -247,11 +247,11 @@ int main(void) {
         char rwx[10];
         mode_to_rwx9(mode, rwx);
         printf("Parsed mask: 0x%04" PRIx16 " (%s)\n", mode, rwx);
-        
-        
-        //TODO: re-enable clear_perm()
-        
-        
+    
+        //to replace permissions, just enter other values like so:
+        //u=r,g=,o=rx
+        //so, if first time you entered g=rwx and got (---rwx---)
+        //then entering "u=r,g=,o=rx" will give you (r-----r-x)        
     }
     
     return EXIT_SUCCESS;
