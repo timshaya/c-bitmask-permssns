@@ -7,7 +7,7 @@ SOURCE = ROOT / "c-bitmask-permssns" / "main.c"
 LIBRARY = ROOT / "libpermissions.so"
 
 # Replace this with the value assigned to PERM_OWNER_READ in main.c.
-PERM_OWNER_READ = ((uint16_t)(1u << 8))
+PERM_OWNER_READ = 1 << 8 //((uint16_t)(1u << 8))
 
 subprocess.run(
     ["gcc", "-shared", "-fPIC", "-o", str(LIBRARY), str(SOURCE)],
