@@ -16,15 +16,16 @@ subprocess.run(
 
 permissions = ctypes.CDLL(str(LIBRARY))
 
-permissions.set_perm.argtypes = [ctypes.c_int, ctypes.c_int]
-permissions.set_perm.restype = ctypes.c_int
-permissions.has_perm.argtypes = [ctypes.c_int, ctypes.c_int]
+permissions.set_perm.argtypes = [ctypes.POINTER(ctypes.c_uint16), ctypes.c_uint16]
+permissions.set_perm.restype = None
+permissions.has_perm.argtypes = [ctypes.c_uint16, ctypes.c_uint16]
 permissions.has_perm.restype = ctypes.c_int
 
 
 def test_set_owner_read_permission():
-    mode = permissions.set_perm(0, PERM_OWNER_READ)
-    assert permissions.has_perm(mode, PERM_OWNER_READ) != 0
+    mode = ctypes.c_uint16(0)
+    permissions.set_perm(ctypes.byref(mode), PERM_OWNER_READ)
+    assert permissions.has_perm(mode.value, PERM_OWNER_READ) != 0
 
 
 def test_owner_read_is_absent_initially():
